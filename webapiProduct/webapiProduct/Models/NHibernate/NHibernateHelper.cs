@@ -12,9 +12,9 @@ namespace webapiProduct.Models.NHibernate
     public class NHibernateHelper
     {
         public NHibernateHelper (IConfiguration configuration)
-	    {
-            Configuration = configuration;
-	    }
+	{
+	 Configuration = configuration;
+	 }
         public IConfiguration Configuration { get; }
         public static ISession OpenSession()
         {
