@@ -11,11 +11,17 @@ namespace webapiProduct.Models.NHibernate
 {
     public class NHibernateHelper
     {
+        public NHibernateHelper (IConfiguration configuration)
+	    {
+            Configuration = configuration;
+	    }
+        public IConfiguration Configuration { get; }
         public static ISession OpenSession()
         {
+            
             ISessionFactory sessionFactory = Fluently.Configure()
      //Настройки БД. Строка подключения к БД MS Sql Server 2008
-     .Database(MsSqlConfiguration.MsSql7.ConnectionString(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=databaseStore;Integrated Security=True;Connect Timeout=30;")
+     .Database(MsSqlConfiguration.MsSql7.ConnectionString(Configuration.GetConnectionString("connSql2017"))
             .ShowSql()
             )
             //Маппинг. Используя AddFromAssemblyOf NHibernate будет пытаться маппить КАЖДЫЙ класс в этой сборке (assembly). Можно выбрать любой класс. 
