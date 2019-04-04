@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NHibernate;
 using webapiProduct.Models;
-using webapiProduct.Models.NHibernate;
 
 namespace webapiProduct.Controllers
 {
@@ -17,15 +17,21 @@ namespace webapiProduct.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
+        private readonly NHibernate.ISession _session;
+
+        public ProductsController(NHibernate.ISession session)
+        {
+            _session = session;
+        }
         // GET: api/Products
         [HttpGet]
         public  IEnumerable<Product> Get()
         {
+            
             IEnumerable<Product> products;
-            using (NHibernate.ISession session = NHibernateHelper.OpenSession())
-            {
-                 products =  session.Query<Product>().ToList();
-            }
+           
+            products =  _session.Query<Product>().ToList();
+            
             return products;
         }
 
@@ -34,10 +40,9 @@ namespace webapiProduct.Controllers
         public async Task<Product> Get(int id)
         {
             Product product;
-            using (NHibernate.ISession session = NHibernateHelper.OpenSession())
-            {
-                product = await session.GetAsync<Product>(id);
-            }
+          
+            product = await _session.GetAsync<Product>(id);
+            
             return product;
         }
 
@@ -45,15 +50,14 @@ namespace webapiProduct.Controllers
         [HttpPost]
         public async void Post([FromBody]Product product )
         {
-            using (var session = NHibernateHelper.OpenSession())
-            {
-                using (var tx = session.BeginTransaction())
+           
+                using (var tx = _session.BeginTransaction())
                 {
-                    await session.SaveAsync(product);
+                    await _session.SaveAsync(product);
                     await tx.CommitAsync();
                 }
 
-            }
+            
             
         }
 
@@ -61,31 +65,29 @@ namespace webapiProduct.Controllers
         [HttpPut("{id}")]
         public async void Put(int id,[FromBody] Product product)
         {
-            using (var session = NHibernateHelper.OpenSession())
-            {
-                using (var tx = session.BeginTransaction())
+           
+                using (var tx = _session.BeginTransaction())
                 {
-                    await session.UpdateAsync(product);
+                    await _session.UpdateAsync(product);
                     await tx.CommitAsync();
                 }
 
-            }
+            
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public async void Delete(int id)
         {
-            using (var session = NHibernateHelper.OpenSession())
-            {
-                using (var tx = session.BeginTransaction())
+            
+                using (var tx = _session.BeginTransaction())
                 {
-                    var product = await session.GetAsync<Product>(id);
-                    await session.DeleteAsync(product);
+                    var product = await _session.GetAsync<Product>(id);
+                    await _session.DeleteAsync(product);
                     await tx.CommitAsync();
                 }
 
-            }
+            
         }
     }
 }
