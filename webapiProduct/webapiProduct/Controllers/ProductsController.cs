@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NHibernate;
 using webapiProduct.Models;
+using ISession = NHibernate.ISession;
 
 namespace webapiProduct.Controllers
 {
@@ -17,9 +18,9 @@ namespace webapiProduct.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly NHibernate.ISession _session;
+        private readonly ISession _session;
 
-        public ProductsController(NHibernate.ISession session)
+        public ProductsController(ISession session)
         {
             _session = session;
         }
@@ -50,7 +51,7 @@ namespace webapiProduct.Controllers
         [HttpPost]
         public async void Post([FromBody]Product product )
         {
-           
+            System.IO.File.WriteAllText("D:\\txt.txt", product.Description + " " + product.Id);
                 using (var tx = _session.BeginTransaction())
                 {
                     await _session.SaveAsync(product);

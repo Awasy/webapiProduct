@@ -25,7 +25,7 @@ namespace webapiProduct.Models
             Map(p => p.Name);
             Map(p => p.Price);
             Map(p => p.Type);
-            Map(p => p.Description).Length(3000);
+            Map(p => p.Description);
         }
     }
 }

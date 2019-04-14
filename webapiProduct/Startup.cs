@@ -44,9 +44,9 @@ namespace webapiProduct
            .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(false, true))
            .BuildSessionFactory();
 
-            services.AddTransient(factory =>
+            services.AddScoped(factory =>
             {
-                return sessionFactory.OpenSession();
+                return sessionFactory;
             });
 
             services.AddCors(options =>
