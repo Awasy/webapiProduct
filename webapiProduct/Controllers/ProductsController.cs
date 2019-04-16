@@ -51,6 +51,34 @@ namespace webapiProduct.Controllers
             return product;
         }
 
+        [Route("getsortproducts/{sortElement}")]
+        public IEnumerable<Product> GetSortProducts(string sortElement)
+        {
+
+            IEnumerable<Product> products;
+            using (var session = SessionFactory.OpenSession())
+            {
+                products = session.Query<Product>().ToList();
+            }
+
+            switch (sortElement)
+            {
+                case "name":
+                    products = products.OrderBy(p => p.Name);
+                    break;
+                case "price":
+                    products = products.OrderBy(p => p.Price);
+                    break;
+                case "type":
+                    products = products.OrderBy(p => p.Type);
+                    break;
+                default:
+                    break;
+            }
+
+            return products;
+        }
+
         // POST: api/Products
         [HttpPost]
         public async void Post([FromBody] Product product )
